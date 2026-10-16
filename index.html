@@ -11,6 +11,18 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Welcome Overlay (Garantiza el inicio de música automático al primer toque) -->
+    <div id="welcome-overlay" class="welcome-overlay" onclick="unlockAudio()">
+        <div class="welcome-content">
+            <div class="welcome-icon">💌</div>
+            <h2 class="welcome-title">Para ti, Ericka ❤️</h2>
+            <p class="welcome-subtitle">Toca la pantalla para abrir tu sorpresa</p>
+            <button class="welcome-btn" type="button">
+                <span>🎵 Entrar con música</span>
+            </button>
+        </div>
+    </div>
+
     <!-- Background Canvas for Falling Rose Petals & Floating Sparkles -->
     <canvas id="petals-canvas"></canvas>
 

@@ -107,43 +107,93 @@ setInterval(updateCounter, 1000);
 updateCounter();
 
 /* =========================================================
-   2. REPRODUCTOR DE MÚSICA INTERACTIVO
+   2. REPRODUCTOR DE MÚSICA & AUTOPLAY INTELIGENTE
    ========================================================= */
 const bgAudio = document.getElementById("bg-music");
 const musicPlayer = document.getElementById("music-player");
 const playerBtn = document.getElementById("player-btn");
+const welcomeOverlay = document.getElementById("welcome-overlay");
 let isAudioPlaying = false;
+
+function setPlayingState(playing) {
+    isAudioPlaying = playing;
+    if (musicPlayer) {
+        if (playing) {
+            musicPlayer.classList.add("playing");
+        } else {
+            musicPlayer.classList.remove("playing");
+        }
+    }
+    if (playerBtn) {
+        playerBtn.textContent = playing ? "❚❚" : "▶";
+    }
+}
+
+function dismissWelcomeOverlay() {
+    if (welcomeOverlay) {
+        welcomeOverlay.classList.add("fade-out");
+        setTimeout(() => {
+            if (welcomeOverlay.parentNode) {
+                welcomeOverlay.remove();
+            }
+        }, 600);
+    }
+}
+
+function playAudioStream() {
+    if (!bgAudio) return Promise.reject();
+    bgAudio.volume = 0.9;
+    return bgAudio.play().then(() => {
+        setPlayingState(true);
+        dismissWelcomeOverlay();
+    });
+}
 
 function toggleMusic() {
     if (!bgAudio) return;
 
     if (isAudioPlaying) {
         bgAudio.pause();
-        isAudioPlaying = false;
-        if (musicPlayer) musicPlayer.classList.remove("playing");
-        if (playerBtn) playerBtn.textContent = "▶";
+        setPlayingState(false);
     } else {
-        bgAudio.play().then(() => {
-            isAudioPlaying = true;
-            if (musicPlayer) musicPlayer.classList.add("playing");
-            if (playerBtn) playerBtn.textContent = "❚❚";
-        }).catch(err => {
-            console.log("Auto-play prevenido por el navegador:", err);
-            alert("Toca la pantalla o presiona el reproductor para habilitar el audio 🎵");
+        playAudioStream().catch(err => {
+            console.log("Audio play prevenido:", err);
         });
     }
 }
 
-// Intentar reproducir suavemente al primer clic en cualquier lugar si el audio aún no inició
-document.addEventListener("click", function startAudioOnFirstClick() {
-    if (!isAudioPlaying && bgAudio) {
-        bgAudio.play().then(() => {
-            isAudioPlaying = true;
-            if (musicPlayer) musicPlayer.classList.add("playing");
-            if (playerBtn) playerBtn.textContent = "❚❚";
-        }).catch(() => {});
+function unlockAudio() {
+    if (isAudioPlaying) {
+        dismissWelcomeOverlay();
+        return;
     }
-}, { once: true });
+    playAudioStream().then(() => {
+        burstHearts(window.innerWidth / 2, window.innerHeight / 2, 18);
+        removeUnlockListeners();
+    }).catch(() => {});
+}
+
+// Eventos para desbloquear audio al primer toque o interacción
+const unlockEvents = ['click', 'touchstart', 'touchend', 'pointerdown', 'keydown'];
+
+function removeUnlockListeners() {
+    unlockEvents.forEach(evt => document.removeEventListener(evt, unlockAudio));
+}
+
+unlockEvents.forEach(evt => {
+    document.addEventListener(evt, unlockAudio, { passive: true });
+});
+
+// Intentar reproducir automáticamente tan pronto cargue la página
+window.addEventListener("DOMContentLoaded", () => {
+    playAudioStream().then(() => {
+        // Autoplay funcionó de inmediato sin restricción del navegador
+        dismissWelcomeOverlay();
+        removeUnlockListeners();
+    }).catch(() => {
+        // El navegador espera una interacción inicial: el overlay queda listo para desbloquear al primer toque
+    });
+});
 
 /* =========================================================
    3. BURBUJAS FLOTANTES DE TEXTO INTERACTIVAS
