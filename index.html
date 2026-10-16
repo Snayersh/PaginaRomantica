@@ -1,19 +1,124 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Ericka ❤️</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <title>Document</title>
 </head>
 <body>
-<button id="playButton" onclick="playMusic()">🎵 Reproducir música</button>
-<audio id="bg-music" src="./resource/Labios de Cereza 2 - (Video Oficial) - T3R Elemento - DEL Records 2024-yt.savetube.me.mp3" loop></audio>
+    <!-- Background Canvas for Falling Rose Petals & Floating Sparkles -->
+    <canvas id="petals-canvas"></canvas>
 
+    <!-- Floating Interactive Bubbles Container -->
+    <div id="bubbles-text"></div>
 
+    <!-- Audio Element -->
+    <audio id="bg-music" src="./resource/Labios de Cereza 2 - (Video Oficial) - T3R Elemento - DEL Records 2024-yt.savetube.me.mp3" loop preload="auto"></audio>
 
-    <div class="message"> Dayana ❤️💞</div>
-<div id="bubbles-text"></div>
-    <script src ="app.js"></script>
+    <!-- Modern Floating Music Player -->
+    <div id="music-player" class="music-player" onclick="toggleMusic()">
+        <div class="player-icon" id="player-icon">🎵</div>
+        <div class="player-info">
+            <span class="player-title">Labios de Cereza 2</span>
+            <span class="player-artist">T3R Elemento</span>
+        </div>
+        <div class="equalizer" id="equalizer">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <button id="player-btn" class="player-btn" aria-label="Reproducir o pausar música">▶</button>
+    </div>
+
+    <!-- Main Hero Card -->
+    <main class="main-card">
+        <div class="badge">Para la niña más hermosa 💕</div>
+        <h1 class="main-title">Ericka ❤️</h1>
+        <p class="subtitle">Cada segundo a tu lado es mi momento favorito</p>
+
+        <!-- Live Relationship Time Counter -->
+        <div class="counter-section">
+            <div class="counter-header">
+                <span class="heart-pulse-icon">⏳</span>
+                <span>Tiempo desde que empezamos a hablar</span>
+            </div>
+            <div class="counter-grid">
+                <div class="counter-box">
+                    <span class="counter-num" id="days">0</span>
+                    <span class="counter-label">Días</span>
+                </div>
+                <div class="counter-box">
+                    <span class="counter-num" id="hours">0</span>
+                    <span class="counter-label">Horas</span>
+                </div>
+                <div class="counter-box">
+                    <span class="counter-num" id="minutes">0</span>
+                    <span class="counter-label">Minutos</span>
+                </div>
+                <div class="counter-box">
+                    <span class="counter-num" id="seconds">0</span>
+                    <span class="counter-label">Segundos</span>
+                </div>
+            </div>
+            <div class="counter-date">29 de Agosto de 2026 ✨</div>
+        </div>
+
+        <!-- Interactive Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="openLetterModal()">
+                <span>💌</span> Abrir mi Carta
+            </button>
+            <button class="btn btn-secondary" onclick="openReasonsModal()">
+                <span>💖</span> ¿Por qué te amo?
+            </button>
+            <button class="btn btn-tertiary" onclick="triggerLoveShower()">
+                <span>🌸</span> Lluvia de Amor
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal: Love Letter (Carta) -->
+    <div id="letter-modal" class="modal-overlay" onclick="closeOnBackdrop(event, 'letter-modal')">
+        <div class="modal-card letter-card">
+            <button class="modal-close-btn" onclick="closeLetterModal()" aria-label="Cerrar">✕</button>
+            <div class="letter-stamp">💌</div>
+            <h2 class="letter-title">Mi niña hermosa, Ericka</h2>
+            <div class="letter-body">
+                <p>Desde aquel <strong>29 de agosto</strong> en que empezamos a hablar, mi mundo dio un giro hermoso y se llenó de luz. Cada mensaje tuyo, cada conversación y cada risa compartida me demuestran lo increíble y especial que eres.</p>
+                <p>No importa cómo haya sido el día, hablar contigo siempre me llena de paz y me saca una gran sonrisa. Gracias por ser esa personita tan linda, tierna y auténtica que alegra mi vida.</p>
+                <p>Esta pequeña página la hice pensando en ti, para recordarte siempre lo importante que eres para mí y lo mucho que te quiero.</p>
+            </div>
+            <div class="letter-signature">
+                <span>Siempre tuyo,</span>
+                <span class="sign-name">Con todo mi amor ❤️</span>
+            </div>
+            <button class="btn btn-primary modal-action-btn" onclick="closeLetterModal()">Guardar en mi corazón 💖</button>
+        </div>
+    </div>
+
+    <!-- Modal: Reasons Why I Love You (Razones por las que te amo) -->
+    <div id="reasons-modal" class="modal-overlay" onclick="closeOnBackdrop(event, 'reasons-modal')">
+        <div class="modal-card reasons-card">
+            <button class="modal-close-btn" onclick="closeReasonsModal()" aria-label="Cerrar">✕</button>
+            <div class="reasons-badge" id="reason-badge">Razón #1 de 30</div>
+            <div class="reason-icon-wrapper">
+                <div class="reason-pulse-heart">💖</div>
+            </div>
+            <p class="reason-quote" id="reason-text">"Por tu sonrisa hermosa que ilumina cualquier día."</p>
+            <div class="reasons-controls">
+                <button class="btn btn-primary" onclick="nextReason()">
+                    <span>Siguiente razón ✨</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
